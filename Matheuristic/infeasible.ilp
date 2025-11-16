@@ -1,0 +1,11 @@
+\ Model (null)_copy
+\ LP format - for model browsing. Use MPS format to capture full model detail.
+\ Signature: 0x833cd2eb3837cdf1
+Minimize
+ 
+Subject To
+ constr2-6_16: - h_8 + t_16 <= -163.0117772008294
+Bounds
+Binaries
+ h_8
+End
