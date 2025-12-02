@@ -62,8 +62,8 @@ void CustInfo::calculate_dis() {
 		this->TD[i][i] = 0;//无人机时长
 		for (size_t j = i + 1; j <= this->num_cust; j++) {
 			this->dis[i][j] = euclideanDistance(this->xy[i], this->xy[j]);
-			this->TT[i][j] = this->dis[i][j] / SpeedT;
-			this->TD[i][j] = this->dis[i][j] / SpeedD;
+			this->TT[i][j] = this->dis[i][j] / SPEED_T;
+			this->TD[i][j] = this->dis[i][j] / SPEED_D;
 			
 			//对称矩阵
 			this->dis[j][i] = this->dis[i][j];

@@ -51,13 +51,16 @@ public:
 		for (auto it = solu.begin(); it != solu.end(); ++it) {
 			if (it->droneRoute.empty()) continue;
 			auto temp_i = it;
-			if (temp_i != solu.begin())
-				while (!c.in_CD(temp_i->id)) { --temp_i; }
+			while (temp_i != solu.begin() && !c.in_CD(temp_i->id)) { --temp_i; }
 			auto temp_j = prev(it->end);
-			if (temp_j != solu.begin())
-				while (!c.in_CD(temp_j->id)) { --temp_j; }
-			if (temp_i->id != temp_j->id)
-				this->P[{ temp_i->id, temp_j->id }] = it->end->t - it->end->e - it->t - TLimit;
+			while (temp_j != solu.begin() && !c.in_CD(temp_j->id)) { --temp_j; }
+			if (temp_i->id != temp_j->id) {
+				double tm = TLimit - (it->end->t - it->end->e - it->t);
+				if (tm <= 0) {
+					int y = 0;
+				}
+				this->P[{ temp_i->id, temp_j->id }] = TLimit - (it->end->t - it->end->e - it->t);
+			}
 		}
 
 		this->n_1 = c.get_num() + 1;
@@ -65,7 +68,6 @@ public:
 
 	void solve(map<int, DroneResupply>& obj) {
 		this->branch_benders_cut(obj);
-		this->gurobi_solve(obj);
 	}
 
 	double get_dt(unsigned int a) {
@@ -74,7 +76,7 @@ public:
 
 private:
 	CustInfo& info;
-	vector<SeriesTime> C_D;
+	vector<SeriesTime> C_D;//可补货节点
 	vector<int> C_delay;
 	int n_1;
 	vector<double> dt;

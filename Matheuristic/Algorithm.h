@@ -15,7 +15,7 @@ public:
 		return this->weightConstruct;
 	}
 	//获取局部搜索算子的权重的引用
-	vector<double>& get_LS() {
+	vector<double> get_LS() {
 		return this->weightLS;
 	}
 	//算法初始化

@@ -4,6 +4,7 @@
 #include<vector>
 #include<unordered_map>
 #include<unordered_set>
+#include<iostream>
 
 using namespace std;
 
@@ -24,6 +25,8 @@ public:
 	}
 	//获取无人机时长
 	double at_TD(unsigned int a, unsigned int b) const {
+		if (a >= TD.size() || b >= TD[0].size())
+			std::cout << a << ' ' << b << endl;
 		return this->TD.at(a).at(b);
 	}
 	//获取卡车时长
