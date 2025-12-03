@@ -21,7 +21,7 @@ int main() {
 
 	long long duration = 0;//初始化运行时长
 
-	while (duration < Max_time) {
+	while (duration < Max_time) {//多起点框架
 		Solution s_current;//构建当前解
 		Solution::initial_LS();//初始化局部搜索
 		s_current.solveResupply();//求解补货方案

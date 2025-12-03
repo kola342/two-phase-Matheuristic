@@ -357,7 +357,7 @@ void ResupplyInfo::branch_benders_cut(map<int, DroneResupply>& obj) {
             }
             this->dt = cb.get_dt();
             this->dt.back() = model.get(GRB_DoubleAttr_ObjVal);
-            std::cout << "Branch-and-Benders-cut 求解 = "
+            std::cout << "      Branch-and-Benders-cut 求解 = "
                 << model.get(GRB_DoubleAttr_ObjVal) << std::endl;
         }
         else {

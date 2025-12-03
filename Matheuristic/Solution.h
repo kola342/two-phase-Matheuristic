@@ -92,16 +92,15 @@ public:
 	*/
 	Solution() {
 		//初始化待插入的两类客户
-		int n = info.get_num();
+		int n = Solution::info.get_num();
 		for (int i = 1; i <= n; i++) {
-			if (info.at_custDelay(i) == 0) this->custInsert.insert(i);
+			if (Solution::info.at_custDelay(i) == 0) this->custInsert.insert(i);
 			else this->custInsert_delay.insert(i);
 		}
 
 		//初始化解
 		initial_solu();
 		this->construct_index = this->intinialize(algorithm.get_Construct());//构造初始解
-		this->numRemove = static_cast<int>(ceil(info.get_num() * PercentageRemove));//定义移除的个数
 		this->delivery_makespan = this->makespan;
 	}
 
@@ -110,35 +109,27 @@ public:
 	}
 
 	/*
-	* 生成新变量
+	* 生成新变量，保存局部搜索需要的信息
 	*/
-	Solution(const Solution& other) : numRemove(other.numRemove),
-		makespan(other.makespan),
-		pointLS(other.pointLS),
-		numLS(other.numLS),
-		custInsert(other.custInsert),
-		custInsert_delay(other.custInsert_delay),
-		tw_resupply(other.tw_resupply),
+	Solution(const Solution& other) : makespan(other.makespan),
+		delivery_makespan(other.delivery_makespan),
+		solu(other.solu),
 		seq(other.seq),
-		delivery_makespan(other.delivery_makespan) {
+		node_resupply(other.node_resupply) {
 		
 		copy_iterator(other);//深拷贝迭代器
 	}
 
 	/*
-	* 赋值给一个已存在的变量
+	* 赋值给一个已存在的变量，存储求解结果
 	*/
 	Solution& operator=(const Solution& other) {
 		if (this != &other) {
-			this->numRemove = other.numRemove;
 			this->makespan = other.makespan;
-			this->pointLS = other.pointLS;
-			this->numLS = other.numLS;
-			this->custInsert = other.custInsert;
-			this->custInsert_delay = other.custInsert_delay;
-			this->tw_resupply = other.tw_resupply;
-			this->seq = other.seq;
 			this->delivery_makespan = other.delivery_makespan;
+			this->solu = other.solu;
+			this->seq.clear();
+			this->node_resupply.clear();
 
 			copy_iterator(other);//深拷贝迭代器
 		}
@@ -146,19 +137,15 @@ public:
 	}	
 
 	/*
-	* 用于move，传入右值引用
+	* 用于move，传入右值引用，保存局部搜索需要的信息
 	*/
 	Solution& operator=(Solution&& other) noexcept {
 		if (this != &other) {
-			this->numRemove = std::move(other.numRemove);
 			this->makespan = std::move(other.makespan);
-			this->pointLS = std::move(other.pointLS);
-			this->numLS = std::move(other.numLS);
-			this->custInsert = std::move(other.custInsert);
-			this->custInsert_delay = std::move(other.custInsert_delay);
-			this->tw_resupply = std::move(other.tw_resupply);
-			this->seq = std::move(other.seq);
 			this->delivery_makespan = std::move(other.delivery_makespan);
+			this->solu = std::move(other.solu);
+			this->seq = move(other.seq);
+			this->node_resupply = move(other.node_resupply);
 
 			copy_iterator(other);//深拷贝迭代器
 		}
@@ -184,11 +171,13 @@ public:
 	void updatePoint(int, double);//更新局部算子的得分
 	void updateWeight();//更新局部算子的权重
 
-	void cout();//输出结果
+	void cout() const;//输出结果
 
 	static void initial_LS() {
 		Solution::weightLS = algorithm.get_LS();
 		Solution::relaxation = 0;
+		Solution::pointLS = vector<double>(Solution::weightLS.size(), 0);
+		Solution::numLS = vector<int>(Solution::weightLS.size(), 0);
 	}
 
 	static void relax() {
@@ -196,21 +185,20 @@ public:
 	}
 
 private:
-	int numRemove;//移除个数
+	static int numRemove;//移除个数
 	list<TruckCust> solu;//解
 	double makespan;//目标函数
 	double delivery_makespan;//配送目标函数
 	static vector<double> weightLS;//局部搜索算子的权重
 	static double relaxation;//松弛系数
-	vector<double> pointLS = vector<double>(6, 0);//局部搜索算子的得分
-	vector<int> numLS = vector<int>(6, 0);//局部搜索算子的使用次数
+	static vector<double> pointLS;//局部搜索算子的得分
+	static vector<int> numLS;//局部搜索算子的使用次数
 
 	unordered_set<int> custInsert;//待插入客户
 	unordered_set<int> custInsert_delay;//待插入客户(延迟)
 
-	unordered_map<int, pair<double, double>> tw_resupply;//补货方案造成的时间窗约束
 	vector<int> seq;//补货方案造成的顺序约束, wu:0
-	//vector<int> seq;//补货方案造成的顺序约束, wu:0
+	unordered_set<int> node_resupply;//补货方案的补货节点
 
 	int intinialize(const vector<double>&);//初始化解
 
@@ -269,6 +257,5 @@ private:
 
 	void copy_iterator(const Solution&);
 
-	int cal();
-	int call();
+	int call();//待删除
 };

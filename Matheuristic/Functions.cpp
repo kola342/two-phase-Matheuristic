@@ -20,6 +20,10 @@ void localSearch(Solution& s_current, Solution& s_best, int outer) {
 		Solution s = s_current;
 		int index = s.localSearch();
 
+		cout << outer << "." << inner << ":" << endl;
+		cout << "	新解:" << endl;
+		cout << "		配送成本：" << s.get_delivery_makespan() << endl;
+
 		if (s.get_delivery_makespan() < s_best.get_delivery_makespan()) {
 			s_current = move(s);
 			s_current.solveResupply();
@@ -38,11 +42,14 @@ void localSearch(Solution& s_current, Solution& s_best, int outer) {
 			s_current.updatePoint(index, DELTA3);
 		}
 
-		if (inner % SEG == 0) s_current.updateWeight();//更新局部搜索权重
-
-		cout << outer << "." << inner << ":" << endl;
-		cout << "配送成本：" << s.get_delivery_makespan();
-		cout << "总成本：" << s.get_makespan();
+		if (inner % SEG == 0) 
+			s_current.updateWeight();//更新局部搜索权重
+		cout << "	当前解:" << endl;
+		cout << "		配送成本：" << s_current.get_delivery_makespan();
+		cout << "		总成本：" << s_current.get_makespan() << endl;
+		cout << "	局部最优解:" << endl;
+		cout << "		配送成本：" << s_best.get_delivery_makespan();
+		cout << "		总成本：" << s_best.get_makespan() << endl;
 
 		T *= RATE_T;
 		++inner;
